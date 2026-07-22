@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vigils Maintenance</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="rail">
+        <div class="brand">
+          <img src="logo.png" alt="Vigils" />
+          <div>
+            <strong>VIGILS</strong>
+            <span>MAINTENANCE</span>
+          </div>
+        </div>
+
+        <nav aria-label="维护视图">
+          <button class="nav-item active" type="button" data-view="overview">
+            <span class="mdl">&#xE9F9;</span><span>维护概览</span>
+          </button>
+          <button class="nav-item" type="button" data-view="packages">
+            <span class="mdl">&#xE896;</span><span>安装来源</span>
+          </button>
+          <button class="nav-item" type="button" data-view="history">
+            <span class="mdl">&#xE81C;</span><span>执行记录</span>
+          </button>
+        </nav>
+
+        <div class="rail-footer">
+          <span class="signal"></span>
+          <span>本机维护通道</span>
+          <small>v0.1.0</small>
+        </div>
+      </aside>
+
+      <main>
+        <header class="topbar">
+          <div>
+            <h1 id="pageTitle">维护概览</h1>
+            <p id="pageSubtitle">正在读取安装状态</p>
+          </div>
+          <div class="toolbar">
+            <button id="settingsButton" class="icon-button" type="button" title="更新源设置" aria-label="更新源设置">
+              <span class="mdl">&#xE713;</span>
+            </button>
+            <button id="refreshButton" class="icon-button" type="button" title="刷新状态" aria-label="刷新状态">
+              <span class="mdl">&#xE72C;</span>
+            </button>
+          </div>
+        </header>
+
+        <section id="overviewView" class="view active">
+          <div class="status-band">
+            <div class="status-main">
+              <span id="statusMark" class="status-mark checking"><span class="mdl">&#xE895;</span></span>
+              <div>
+                <span class="eyebrow">INSTALLATION STATE</span>
+                <h2 id="statusTitle">检测中</h2>
+                <p id="statusDetail">正在检查注册表、程序文件和运行进程</p>
+              </div>
+            </div>
+            <div class="primary-actions">
+              <button id="launchButton" class="button secondary" type="button" disabled>
+                <span class="mdl">&#xE768;</span><span>启动 Vigils</span>
+              </button>
+              <button id="updateButton" class="button primary" type="button" disabled>
+                <span class="mdl">&#xE777;</span><span>检查更新</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="overview-grid">
+            <section class="panel installation-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">LOCAL INSTALLATION</span>
+                  <h3>本机安装</h3>
+                </div>
+                <span id="installBadge" class="badge neutral">未知</span>
+              </div>
+              <dl class="facts">
+                <div><dt>版本</dt><dd id="versionValue">-</dd></div>
+                <div><dt>安装目录</dt><dd id="locationValue">-</dd></div>
+                <div><dt>运行状态</dt><dd id="processValue">-</dd></div>
+                <div><dt>用户数据</dt><dd id="dataValue">-</dd></div>
+              </dl>
+              <div class="panel-actions">
+                <button id="openFolderButton" class="button ghost" type="button" disabled>
+                  <span class="mdl">&#xE838;</span><span>打开目录</span>
+                </button>
+                <button id="repairButton" class="button ghost" type="button" disabled>
+                  <span class="mdl">&#xE90F;</span><span>修复接入</span>
+                </button>
+                <button id="uninstallButton" class="button danger-ghost" type="button" disabled>
+                  <span class="mdl">&#xE74D;</span><span>卸载</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="panel release-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">RELEASE CHANNEL</span>
+                  <h3>发布通道</h3>
+                </div>
+                <span id="securityBadge" class="badge neutral">待检查</span>
+              </div>
+              <div id="releaseEmpty" class="empty-state">
+                <span class="mdl empty-icon">&#xE753;</span>
+                <p>尚未检查远程版本</p>
+              </div>
+              <div id="releaseDetails" class="release-details hidden">
+                <div class="release-version">
+                  <strong id="releaseVersion">-</strong>
+                  <span id="releaseDate">-</span>
+                </div>
+                <p id="releaseNotes">-</p>
+                <div class="release-footer">
+                  <span id="releaseState">-</span>
+                  <button id="installUpdateButton" class="button primary compact" type="button">
+                    <span class="mdl">&#xE896;</span><span>下载并安装</span>
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <section class="activity-strip">
+            <div class="activity-copy">
+              <span id="activityIcon" class="activity-icon mdl">&#xE946;</span>
+              <div>
+                <strong id="activityTitle">维护器就绪</strong>
+                <span id="activityDetail">所有操作均在本机执行</span>
+              </div>
+            </div>
+            <div id="progressWrap" class="progress-wrap hidden">
+              <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+              <span id="progressText">0%</span>
+            </div>
+          </section>
+        </section>
+
+        <section id="packagesView" class="view">
+          <section class="package-workspace">
+            <div class="section-intro">
+              <span class="eyebrow">LOCAL PACKAGE</span>
+              <h2>本地安装包</h2>
+            </div>
+            <div class="package-picker">
+              <div class="package-file">
+                <span class="mdl package-icon">&#xE896;</span>
+                <div>
+                  <strong id="packageName">未选择安装包</strong>
+                  <span id="packageMeta">支持 NSIS .exe 和 MSI .msi</span>
+                </div>
+              </div>
+              <button id="choosePackageButton" class="button secondary" type="button">
+                <span class="mdl">&#xE8B7;</span><span>选择文件</span>
+              </button>
+            </div>
+            <dl id="packageFacts" class="facts package-facts hidden">
+              <div><dt>类型</dt><dd id="packageType">-</dd></div>
+              <div><dt>大小</dt><dd id="packageSize">-</dd></div>
+              <div class="hash-row"><dt>SHA-256</dt><dd id="packageHash">-</dd></div>
+            </dl>
+            <div class="install-options">
+              <label><input id="silentInstall" type="checkbox" /> <span>后台安装</span></label>
+              <label><input id="launchAfter" type="checkbox" checked /> <span>完成后启动 Vigils</span></label>
+            </div>
+            <button id="installLocalButton" class="button primary install-command" type="button" disabled>
+              <span class="mdl">&#xE896;</span><span>安装所选版本</span>
+            </button>
+          </section>
+        </section>
+
+        <section id="historyView" class="view">
+          <div class="history-toolbar">
+            <div>
+              <span class="eyebrow">OPERATION LOG</span>
+              <h2>执行记录</h2>
+            </div>
+            <button id="clearLogButton" class="button ghost compact" type="button">
+              <span class="mdl">&#xE74D;</span><span>清空</span>
+            </button>
+          </div>
+          <div id="operationLog" class="operation-log">
+            <div class="log-empty">本次会话尚无维护操作</div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="settingsDialog">
+      <form method="dialog" class="dialog-content">
+        <div class="dialog-heading">
+          <div><span class="eyebrow">RELEASE SOURCE</span><h2>更新源设置</h2></div>
+          <button class="icon-button" value="cancel" title="关闭" aria-label="关闭"><span class="mdl">&#xE711;</span></button>
+        </div>
+        <label class="field-label" for="endpointInput">清单 URL</label>
+        <input id="endpointInput" class="text-input" type="url" spellcheck="false" />
+        <div class="trust-line"><span class="mdl">&#xE73E;</span><span>仅接受 HTTPS；在线安装包必须通过 minisign 验签。</span></div>
+        <div class="dialog-actions">
+          <button id="resetEndpointButton" class="button ghost" type="button">恢复默认</button>
+          <button id="saveEndpointButton" class="button primary" value="default">保存</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="uninstallDialog">
+      <form method="dialog" class="dialog-content danger-dialog">
+        <div class="dialog-heading">
+          <div><span class="eyebrow danger-text">REMOVE INSTALLATION</span><h2>卸载 Vigils</h2></div>
+          <button class="icon-button" value="cancel" title="关闭" aria-label="关闭"><span class="mdl">&#xE711;</span></button>
+        </div>
+        <div class="warning-line"><span class="mdl">&#xE7BA;</span><span>将停止守护进程、还原 AI agent 接入配置并运行官方卸载程序。</span></div>
+        <label class="danger-option"><input id="purgeData" type="checkbox" /> <span>同时删除本地账本、模型和设置</span></label>
+        <label class="danger-option"><input id="forceUninstall" type="checkbox" /> <span>接入配置还原失败时仍继续卸载</span></label>
+        <div class="dialog-actions">
+          <button class="button ghost" value="cancel">取消</button>
+          <button id="confirmUninstallButton" class="button danger" value="default">确认卸载</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

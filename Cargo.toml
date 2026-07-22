@@ -1,0 +1,35 @@
+[package]
+name = "uvigils"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.80"
+publish = false
+description = "Windows desktop utility for installing, updating, repairing, and uninstalling Vigils"
+repository = "https://github.com/lvusyy/vigils-maintenance"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[dependencies]
+base64 = "0.22"
+dirs = "6"
+hex = "0.4"
+minisign-verify = "0.2"
+rfd = { version = "0.15", default-features = false }
+semver = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+sysinfo = "0.33"
+tauri = { version = "2", features = [] }
+thiserror = "2"
+ureq = { version = "2", default-features = false, features = ["tls", "json"] }
+
+[target.'cfg(windows)'.dependencies]
+winreg = "0.55"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dev-dependencies]
+tempfile = "3"
