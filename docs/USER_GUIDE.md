@@ -9,10 +9,10 @@
 
 ## 安装维护器
 
-运行：
+从 [GitHub Releases](https://github.com/lvusyy/vigils-maintenance/releases/tag/v0.1.0) 下载安装器并运行：
 
 ```text
-dist\Vigils Maintenance_0.1.0_x64-setup.exe
+Vigils.Maintenance_0.1.0_x64-setup.exe
 ```
 
 维护器按当前用户安装，不要求为其他 Windows 用户部署。也可以直接运行 `dist\uvigils.exe`。
@@ -22,7 +22,7 @@ dist\Vigils Maintenance_0.1.0_x64-setup.exe
 发布前可在 PowerShell 中核对安装器：
 
 ```powershell
-Get-FileHash -Algorithm SHA256 -LiteralPath '.\dist\Vigils Maintenance_0.1.0_x64-setup.exe'
+Get-FileHash -Algorithm SHA256 -LiteralPath '.\Vigils.Maintenance_0.1.0_x64-setup.exe'
 ```
 
 期望值见[交付记录](RELEASE_0.1.0.md)。

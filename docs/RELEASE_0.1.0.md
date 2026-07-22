@@ -13,6 +13,12 @@
 | `dist/uvigils.exe` | 11,238,400 bytes | `E8BC12DF331313F2583BB49BAFD11EB150E46651BB5B8502EC2122094B802C62` |
 | `dist/Vigils Maintenance_0.1.0_x64-setup.exe` | 2,886,735 bytes | `4353DDC06938932F214D12F7F0D584EC5B848285796745FC09826FF8093CBBE1` |
 
+GitHub Release 下载：
+
+- [Vigils.Maintenance_0.1.0_x64-setup.exe](https://github.com/lvusyy/vigils-maintenance/releases/download/v0.1.0/Vigils.Maintenance_0.1.0_x64-setup.exe)
+- [uvigils.exe](https://github.com/lvusyy/vigils-maintenance/releases/download/v0.1.0/uvigils.exe)
+- [SHA256SUMS.txt](https://github.com/lvusyy/vigils-maintenance/releases/download/v0.1.0/SHA256SUMS.txt)
+
 Authenticode 状态：两个产物均为 `NotSigned`。本版本适合内网、测试或受控交付；公开分发前需要代码签名并重新记录签名后文件的大小和 SHA-256。
 
 ## 验证结果
