@@ -15,7 +15,10 @@ fn get_status() -> Installation {
 #[tauri::command]
 fn choose_installer() -> Option<String> {
     rfd::FileDialog::new()
-        .add_filter("Windows installer", &["exe", "msi"])
+        .add_filter(
+            platform::installer_filter_name(),
+            platform::supported_package_extensions(),
+        )
         .set_title("选择 Vigils 安装包")
         .pick_file()
         .map(|path| path.display().to_string())

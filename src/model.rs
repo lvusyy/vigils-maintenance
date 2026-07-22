@@ -6,7 +6,11 @@ pub const DEFAULT_UPDATE_ENDPOINT: &str =
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Installation {
+    pub platform: String,
     pub installed: bool,
+    pub install_type: Option<String>,
+    pub uninstall_supported: bool,
+    pub supported_packages: Vec<String>,
     pub version: Option<String>,
     pub display_name: Option<String>,
     pub install_location: Option<String>,

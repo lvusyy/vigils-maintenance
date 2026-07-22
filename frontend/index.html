@@ -60,7 +60,7 @@
               <div>
                 <span class="eyebrow">INSTALLATION STATE</span>
                 <h2 id="statusTitle">检测中</h2>
-                <p id="statusDetail">正在检查注册表、程序文件和运行进程</p>
+                <p id="statusDetail">正在检查系统安装记录、程序文件和运行进程</p>
               </div>
             </div>
             <div class="primary-actions">
@@ -83,6 +83,8 @@
                 <span id="installBadge" class="badge neutral">未知</span>
               </div>
               <dl class="facts">
+                <div><dt>平台</dt><dd id="platformValue">-</dd></div>
+                <div><dt>安装方式</dt><dd id="installTypeValue">-</dd></div>
                 <div><dt>版本</dt><dd id="versionValue">-</dd></div>
                 <div><dt>安装目录</dt><dd id="locationValue">-</dd></div>
                 <div><dt>运行状态</dt><dd id="processValue">-</dd></div>
@@ -155,7 +157,7 @@
                 <span class="mdl package-icon">&#xE896;</span>
                 <div>
                   <strong id="packageName">未选择安装包</strong>
-                  <span id="packageMeta">支持 NSIS .exe 和 MSI .msi</span>
+                  <span id="packageMeta">支持当前系统的原生安装包</span>
                 </div>
               </div>
               <button id="choosePackageButton" class="button secondary" type="button">

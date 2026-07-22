@@ -1,4 +1,5 @@
 use crate::model::{ProgressEvent, UpdateInfo, UpdateManifest, DEFAULT_UPDATE_ENDPOINT};
+use crate::platform::{is_supported_package_extension, supported_package_description};
 use base64::Engine as _;
 use semver::Version;
 use sha2::{Digest, Sha256};
@@ -23,21 +24,9 @@ pub fn resolve_manifest_url(
     if !template.starts_with("https://") {
         return Err("更新清单必须使用 HTTPS".into());
     }
-    let target = if cfg!(windows) {
-        "windows"
-    } else if cfg!(target_os = "macos") {
-        "darwin"
-    } else {
-        "linux"
-    };
-    let arch = if cfg!(target_arch = "aarch64") {
-        "aarch64"
-    } else {
-        "x86_64"
-    };
     Ok(template
-        .replace("{{target}}", target)
-        .replace("{{arch}}", arch)
+        .replace("{{target}}", update_target())
+        .replace("{{arch}}", update_arch())
         .replace("{{current_version}}", current_version)
         .replace("{version}", current_version))
 }
@@ -109,11 +98,7 @@ pub fn download_verified(
         .join("Uvigils")
         .join("downloads");
     fs::create_dir_all(&download_dir).map_err(|error| format!("创建下载目录失败：{error}"))?;
-    let extension = Path::new(&manifest.url)
-        .extension()
-        .and_then(|value| value.to_str())
-        .filter(|value| matches!(value.to_ascii_lowercase().as_str(), "exe" | "msi"))
-        .unwrap_or("exe");
+    let extension = download_extension(&manifest.url)?;
     let safe_version: String = manifest
         .version
         .chars()
@@ -230,11 +215,43 @@ fn verify_minisign(data: &[u8], wrapped_signature: &str, public_key: &str) -> Re
 
 fn validate_download_url(url: &str) -> Result<(), String> {
     ensure_https(url, "安装包 URL")?;
-    let lower = url.to_ascii_lowercase();
-    if !(lower.ends_with(".exe") || lower.ends_with(".msi")) {
-        return Err("更新清单只允许 Windows .exe 或 .msi 安装包".into());
+    download_extension(url).map(|_| ())
+}
+
+fn download_extension(url: &str) -> Result<String, String> {
+    let extension = Path::new(url)
+        .extension()
+        .and_then(|value| value.to_str())
+        .map(str::to_ascii_lowercase)
+        .ok_or_else(|| "安装包 URL 缺少文件扩展名".to_string())?;
+    if is_supported_package_extension(&extension) {
+        Ok(extension)
+    } else {
+        Err(format!(
+            "当前系统的在线更新只允许 {} 安装包",
+            supported_package_description()
+        ))
     }
-    Ok(())
+}
+
+fn update_target() -> &'static str {
+    if cfg!(windows) {
+        "windows"
+    } else if cfg!(target_os = "macos") {
+        "darwin"
+    } else {
+        "linux"
+    }
+}
+
+fn update_arch() -> &'static str {
+    if cfg!(target_arch = "aarch64") {
+        "aarch64"
+    } else if cfg!(target_arch = "x86") {
+        "i686"
+    } else {
+        "x86_64"
+    }
 }
 
 fn ensure_https(url: &str, label: &str) -> Result<(), String> {
@@ -283,9 +300,7 @@ mod tests {
     fn expands_tauri_endpoint_placeholders() {
         let url = resolve_manifest_url(None, "0.1.7").unwrap();
         assert!(url.starts_with("https://"));
-        assert!(
-            url.contains("windows-x86_64/0.1.7.json") || url.contains("windows-aarch64/0.1.7.json")
-        );
+        assert!(url.contains(&format!("{}-{}/0.1.7.json", update_target(), update_arch())));
     }
 
     #[test]
@@ -301,6 +316,15 @@ mod tests {
         )
         .is_err());
         assert!(validate_update_authenticity("signed", None).is_ok());
+    }
+
+    #[test]
+    fn update_package_must_match_current_platform() {
+        let supported = crate::platform::supported_package_extensions()
+            .first()
+            .unwrap();
+        assert!(download_extension(&format!("https://example.test/Vigils.{supported}")).is_ok());
+        assert!(download_extension("https://example.test/Vigils.zip").is_err());
     }
 
     #[test]

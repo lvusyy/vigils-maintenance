@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 rust-version = "1.80"
 publish = false
-description = "Windows desktop utility for installing, updating, repairing, and uninstalling Vigils"
+description = "Cross-platform desktop utility for installing, updating, repairing, and uninstalling Vigils"
 repository = "https://github.com/lvusyy/vigils-maintenance"
 
 [lints.rust]

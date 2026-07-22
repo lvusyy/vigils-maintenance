@@ -39,6 +39,8 @@ function renderStatus() {
   $("pageSubtitle").textContent = installed ? "本机安装可维护" : "等待安装来源";
   $("installBadge").className = `badge ${installed ? "good" : "warn"}`;
   $("installBadge").textContent = installed ? "INSTALLED" : "NOT INSTALLED";
+  $("platformValue").textContent = item.platform || "-";
+  $("installTypeValue").textContent = item.installType || "-";
   $("versionValue").textContent = item.version || "-";
   $("locationValue").textContent = item.installLocation || item.appExecutable || "-";
   $("locationValue").title = $("locationValue").textContent;
@@ -48,7 +50,7 @@ function renderStatus() {
   $("launchButton").disabled = state.busy || !item.appExecutable;
   $("openFolderButton").disabled = state.busy || !installed;
   $("repairButton").disabled = state.busy || !item.hubExecutable;
-  $("uninstallButton").disabled = state.busy || !item.uninstallCommand;
+  $("uninstallButton").disabled = state.busy || !item.uninstallSupported;
   $("updateButton").disabled = state.busy;
   $("updateButton").querySelector("span:last-child").textContent = state.update?.available ? "有可用更新" : "检查更新";
   $("installLocalButton").disabled = state.busy || !state.package;
@@ -74,7 +76,9 @@ function renderPackage() {
   const item = state.package;
   $("packageFacts").classList.toggle("hidden", !item);
   $("packageName").textContent = item?.fileName || "未选择安装包";
-  $("packageMeta").textContent = item ? item.path : "支持 NSIS .exe 和 MSI .msi";
+  $("packageMeta").textContent = item
+    ? item.path
+    : `支持 ${(state.installation?.supportedPackages || []).join(" / ") || "当前系统原生安装包"}`;
   if (item) {
     $("packageType").textContent = item.packageType;
     $("packageSize").textContent = formatBytes(item.sizeBytes);
