@@ -82,9 +82,11 @@ jobs:
         run: |
           mkdir release-upload
           while IFS= read -r -d '' file; do
-            target="release-upload/$(basename "$file")"
+            source_name="$(basename "$file")"
+            release_name="${source_name// /.}"
+            target="release-upload/$release_name"
             if [[ -e "$target" ]]; then
-              echo "Duplicate release asset: $(basename "$file")" >&2
+              echo "Duplicate release asset: $release_name" >&2
               exit 1
             fi
             cp "$file" "$target"
